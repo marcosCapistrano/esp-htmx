@@ -1,0 +1,18 @@
+menu "WiFi Component Configuration"
+
+    config WIFI_DEFAULT_SSID
+        string "Default WiFi SSID"
+        default "ASIC_Tester"
+        help
+            The default SSID for the WiFi Access Point.
+            This is used when no credentials are stored in NVS.
+
+    config WIFI_DEFAULT_PASSWORD
+        string "Default WiFi Password"
+        default "password"
+        help
+            The default password for the WiFi Access Point.
+            This is used when no credentials are stored in NVS.
+            Must be at least 8 characters for WPA2.
+
+endmenu

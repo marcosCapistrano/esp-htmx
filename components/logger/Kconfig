@@ -1,0 +1,9 @@
+menu "Logger Component"
+
+    config LOGGER_LEVEL
+        int "The max level of logs that should appear'"
+        default 3
+        help
+            The minimum level that should be logged
+
+endmenu
