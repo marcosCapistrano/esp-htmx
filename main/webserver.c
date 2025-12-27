@@ -10,7 +10,7 @@ typedef struct
     const char search[128];
 } page_data_t;
 
-tpl_ret_t contacts_hook(const char *key, int index, char *out, size_t max, void *ctx)
+tpl_ret_t boards_hook(const char *key, int index, char *out, size_t max, void *ctx)
 {
     page_data_t *data = (page_data_t *)ctx;
     LOG_E("key: %s", key);
@@ -23,7 +23,7 @@ tpl_ret_t contacts_hook(const char *key, int index, char *out, size_t max, void 
     return TPL_RET_STOP; // Key not found
 }
 
-static esp_err_t contacts_handler(httpd_req_t *req)
+static esp_err_t boards_handler(httpd_req_t *req)
 {
     char search_param[128] = {0}; // holds the parameter for the contact name, or empty if none
 
@@ -40,57 +40,56 @@ static esp_err_t contacts_handler(httpd_req_t *req)
         }
     }
 
-    const char *index_html =
-        "<!DOCTYPE html>\n"
-        "<html lang=\"en\">\n"
-        "\n"
-        "<head>\n"
-        "    <meta charset=\"UTF-8\">\n"
-        "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-        "    <title>Document</title>\n"
-        "</head>\n"
-        "\n"
-        "<body>\n"
-        "    <form action=\"/contacts\" method=\"get\" class=\"tool-bar\">\n"
-        "    <label for=\"search\">Search Term</label>\n"
-        "    <input id=\"search\" type=\"search\" name=\"q\"\n"
-        "      value=\"{{search}}\" />\n"
-        "    <input type=\"submit\" value=\"Search\"/>\n"
-        "  </form>\n"
-        "</body>\n"
-        "\n"
-        "</html>";
+    FILE *boards_file = fopen("/website/boards.html", "r");
 
-    char buffer[512] = {0};
+    if (boards_file != NULL)
+    {
+        char boards_html_buf[256];
 
-    page_data_t page_data = {0};
-    strcpy(page_data.search, search_param);
+        while (fgets(boards_html_buf, 256, boards_file) != NULL)
+        {
+            LOG_I("Sending: %s", boards_html_buf);
+            httpd_resp_send_chunk(req, boards_html_buf, strlen(boards_html_buf));
+        }
+        httpd_resp_send(req, NULL, 0);
 
-    template_render(index_html, buffer, sizeof(buffer), contacts_hook, &page_data);
+        return ESP_OK;
+    }
+    else
+    {
+        LOG_E("Failed to open boards html file");
+        httpd_resp_send_500(req);
 
-    httpd_resp_send(req, buffer, strlen(buffer));
+        return ESP_FAIL;
+    }
 
-    return ESP_OK;
+    // page_data_t page_data = {0};
+    // strcpy(page_data.search, search_param);
+
+    // template_render(index_html, buffer, sizeof(buffer), contacts_hook, &page_data);
+
+    // httpd_resp_send(req, buffer, strlen(buffer));
 }
 
-httpd_uri_t contacts_uri = {
-    .uri = "/contacts",
-    .method = HTTP_GET,
-    .handler = contacts_handler,
-};
 
 static esp_err_t index_handler(httpd_req_t *req)
 {
     httpd_resp_set_status(req, HTTPD_301);
-    httpd_resp_set_hdr(req, "Location", "/contacts");
+    httpd_resp_set_hdr(req, "Location", "/boards");
 
     httpd_resp_send(req, NULL, 0);
 
     return ESP_OK;
 }
 
+httpd_uri_t boards_uri = {
+    .uri = "/boards",
+    .method = HTTP_GET,
+    .handler = boards_handler,
+};
+
 httpd_uri_t index_uri = {
-    .uri = "/",
+    .uri = "/*",
     .method = HTTP_GET,
     .handler = index_handler,
 };
@@ -100,6 +99,7 @@ static httpd_handle_t s_server;
 esp_err_t webserver_init()
 {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+    config.uri_match_fn = httpd_uri_match_wildcard;
 
     if (httpd_start(&s_server, &config) != ESP_OK)
     {
@@ -108,7 +108,7 @@ esp_err_t webserver_init()
     }
 
     // register uri handlers
-    httpd_register_uri_handler(s_server, &contacts_uri);
+    httpd_register_uri_handler(s_server, &boards_uri);
     httpd_register_uri_handler(s_server, &index_uri);
 
     LOG_I("Webserver initialized");

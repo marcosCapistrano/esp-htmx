@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-grey: #383838;
+    --color-dark: #0E0E0E;
+    --color-light: #D3D3D3;
+    --color-black: #000000;
+    --color-white: #FFFFFF;
+
+    --fs-700: 3rem;
+    --fs-600: 2.5rem;
+    --fs-500: 2rem;
+    --fs-400: 1.725rem;
+    --fs-300: 1.44rem;
+    --fs-200: 1.2rem;
+    --fs-100: 1rem;
+    --fs-50: 0.833rem;
+    --fs-25: 0.694rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-grey);
+}
+
+button {
+    text-align: inherit;
+    cursor: pointer;
+}
+
+.container {
+    max-width: 1028px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+.card {
+    background-color: var(--color-dark);
+    color: var(--color-light);
+    padding: 1rem;
+}
+
+a.card:hover {
+    background-color: var(--color-black);
+    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.25);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 2rem !important;
+}
+
+/* BOARDS */
+.boards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+}
+
+/* BOARDS END */
+
+/* EEPROM */
+.eeprom-clipboard {
+    margin: 0 auto;
+    font-family: monospace;
+    font-size: var(--fs-200);
+    width: 100%;
+    field-sizing: content;
+    color: #03A062;
+}
+
+.buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+/* EEPROM END */

@@ -6,3 +6,4 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 # "Trim" the build. Include the minimal set of components, main, and anything it depends on.
 idf_build_set_property(MINIMAL_BUILD ON)
 project(esp-htmx)
+spiffs_create_partition_image(storage ${CMAKE_CURRENT_LIST_DIR}/website FLASH_IN_PROJECT)
