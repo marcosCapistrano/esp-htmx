@@ -8,8 +8,8 @@
 <div class="card">
     {#each sensors as sensor}
         <div class="sensor">
-            <span>{sensor.designator}</span>
-            <span>{sensor.value}</span>
+            <span class="designator">{sensor.designator}</span>
+            <span class="value">{sensor.value} °C</span>
         </div>
     {/each}
 </div>
@@ -24,5 +24,11 @@
     .sensor {
         display: flex;
         flex-direction: column;
+        align-items: center;
+    }
+
+    .designator::before {
+        content: "● ";
+        color: #00ff00;
     }
 </style>

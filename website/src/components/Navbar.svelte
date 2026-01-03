@@ -8,15 +8,15 @@
 
 <header>
     <nav class="container">
-        <a href="/boards" class:active={$page.url.pathname === "/boards/"}>
+        <a href="/boards" class:active={$page.url.pathname.startsWith("/boards")}>
             Boards
         </a>
 
-        <a href="/eeprom" class:active={$page.url.pathname === "/eeprom/"}>
+        <a href="/eeprom" class:active={$page.url.pathname.startsWith("/eeprom")}>
             EEPROM
         </a>
 
-        <a href="/config" class:active={$page.url.pathname === "/config/"}>
+        <a href="/config" class:active={$page.url.pathname.startsWith("/config")}>
             Config
         </a>
     </nav>
